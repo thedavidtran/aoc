@@ -7,27 +7,32 @@ struct Coordinate<> {
     y: i32,
 }
 
-fn move_entity(entity : String, coordinate : &mut Coordinate, direction: char) {
+struct Entity {
+    name: String,
+    location: Coordinate
+}
+
+fn move_entity(entity : &mut Entity, direction: char) {
     match direction {
         '<' => { // left
             println!("{direction} left");
-            coordinate.x -= 1;
+            entity.location.x -= 1;
         }
         '>' => { // right
             println!("{direction} right");
-            coordinate.x += 1;
+            entity.location.x += 1;
         }
         '^' => { // up
             println!("{direction} up");
-            coordinate.y += 1;
+            entity.location.y += 1;
         }
         'v' => { // down
             println!("{direction} down");
-            coordinate.y -= 1;
+            entity.location.y -= 1;
         }
         _ => todo!()
     }
-    println!("{} is at ({}, {})", entity, coordinate.x, coordinate.y);
+    println!("{} is at ({}, {})", entity.name, entity.location.x, entity.location.y);
 }
 
 fn main() {
@@ -38,23 +43,35 @@ fn main() {
         .expect("Should have been able to read the file");
     println!("Input from '{FILE_PATH}':\n{input}");
 
-    let mut santa_coordinates = Coordinate { x: 0, y: 0 };
-    let mut robo_santa_coordinates = Coordinate { x: 0, y: 0 };
+    let mut santa = Entity {
+        name: "santa".to_string(),
+        location: Coordinate {
+            x: 0,
+            y: 0
+        }
+    };
+    let mut robo_santa = Entity {
+        name: "robo santa".to_string(),
+        location: Coordinate {
+            x: 0,
+            y: 0
+        }
+    };
     let mut visited: HashSet<Coordinate> = HashSet::new();
-    println!("santa started at ({}, {})", santa_coordinates.x, santa_coordinates.y);
-    println!("robo santa started at ({}, {})", robo_santa_coordinates.x, robo_santa_coordinates.y);
+    println!("{} started at ({}, {})", santa.name, santa.location.x, santa.location.y);
+    println!("{} started at ({}, {})", robo_santa.name, robo_santa.location.x, robo_santa.location.y);
     // insert initial starting spots
-    visited.insert(santa_coordinates.clone());
-    visited.insert(robo_santa_coordinates.clone());
+    visited.insert(santa.location.clone());
+    visited.insert(robo_santa.location.clone());
     let mut turn = true;
     for c in input.chars() {
-        if (turn) {
-            move_entity("santa".to_string(), &mut santa_coordinates, c);
-            visited.insert(santa_coordinates.clone());
+        if turn {
+            move_entity( &mut santa, c);
+            visited.insert(santa.location.clone());
             turn = false;
         } else {
-            move_entity("robo santa".to_string(), &mut robo_santa_coordinates, c);
-            visited.insert(robo_santa_coordinates.clone());
+            move_entity(&mut robo_santa, c);
+            visited.insert(robo_santa.location.clone());
             turn = true;
         }
     }
