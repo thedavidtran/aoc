@@ -16,6 +16,5 @@ For example:
 ```
 Run:
 ```shell
-> rustc main.rs
-> ./main
+> cargo run
 ```
