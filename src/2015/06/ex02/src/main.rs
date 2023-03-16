@@ -59,42 +59,51 @@ fn parse(s: &str) -> Command {
     }
 }
 
-fn process(command: &Command, lights: &mut [[usize; 1000]; 1000]) {
+fn process(command: &Command, lights: &mut [[isize; 1000]; 1000]) {
     for i in command.start.x..=command.end.x {
         for j in command.start.y..=command.end.y {
-            lights[i][j] = match command.mode {
+            lights[i][j] += match command.mode {
                 Mode::On => { 1 },
-                Mode::Off => { 0 },
-                Mode::Toggle => { if lights[i][j] == 1 { 0 } else { 1 } }
+                Mode::Off => { if lights[i][j] == 0 { 0 } else { -1 } },
+                Mode::Toggle => { 2 }
             }
         }
     }
 }
 
-fn count(lights: &[[usize; 1000]; 1000]) -> i32 {
+fn calc_brightness(lights: &[[isize; 1000]; 1000]) -> isize {
     let mut result = 0;
     for i in 0..lights.len() {
         for j in 0..lights[i].len() {
-            if lights[i][j] == 1 {
-              result += 1;
-            }
+            result += lights[i][j];
         }
     }
     result
 }
 
+fn print(lights: &[[isize; 1000]; 1000]) {
+    for i in 0..lights.len() {
+        println!("row {}", i);
+        for j in 0..lights[i].len() {
+            print!("{},", lights[i][j]);
+        }
+    }
+}
+
 fn main() {
     println!("--- Day 6: Probably a Fire Hazard ---");
+    println!("--- Part 2 ---");
     const FILE_PATH : &str = "./input.txt";
     // Read input.txt
     let input = filename_to_string(FILE_PATH);
-    let mut lights_lit_count = 0;
-    let mut lights: [[usize; 1000]; 1000] = [[0; 1000]; 1000];
+    let mut brightness = 0;
+    let mut lights: [[isize; 1000]; 1000] = [[0; 1000]; 1000];
     input.unwrap().split("\n").for_each(|line| {
         println!("{line}");
         let command = parse(line);
         process(&command, &mut lights);
     });
-    lights_lit_count = count(&lights);
-    println!("Number of lights are lit: {lights_lit_count}"); // 377891
+    // print(&lights);
+    brightness = calc_brightness(&lights);
+    println!("Total brightness: {brightness}"); // 14110788
 }
