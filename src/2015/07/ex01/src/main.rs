@@ -237,4 +237,5 @@ fn main() {
         println!("wires size {} value map size {}", wires.len(), values_map.len());
     }
     println!("value map is {:#?}", values_map); // a: 3176
+    println!("wire a value is {:#?}", values_map.get("a").unwrap());
 }
