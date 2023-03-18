@@ -1,8 +1,10 @@
 use std::io::{self, Read};
 use std::fs::File;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use lazy_static::lazy_static;
 use fancy_regex::Regex;
+use itertools::Itertools;
 
 fn filename_to_string(s: &str) -> io::Result<String> {
     let mut file = File::open(s)?;
@@ -11,7 +13,7 @@ fn filename_to_string(s: &str) -> io::Result<String> {
     Ok(s)
 }
 
-fn parse(s: &str, weights: &mut HashMap<String, usize>) {
+fn parse(s: &str, weights: &mut HashMap<String, usize>, cities: &mut HashSet<String>) {
     lazy_static! {
         static ref RE_DIST: Regex = Regex::new(r"(?<from>[A-Za-z]+) to (?<to>[A-Za-z]+) = (?<dist>[\d]+)").unwrap();
     }
@@ -24,20 +26,36 @@ fn parse(s: &str, weights: &mut HashMap<String, usize>) {
         println!("from: {}, to: {}, dist: {}", from, to, dist);
         weights.insert(format!("{from}_{to}"), dist);
         weights.insert(format!("{to}_{from}"), dist);
+        cities.insert(String::from(from));
+        cities.insert(String::from(to));
     }
+}
+
+fn calc_distance(path: &Vec<&String>, weights: &HashMap<String, usize>) -> usize {
+    let mut dist: usize = 0;
+    for x in 0..path.len()-1 {
+        let key = format!("{}_{}", path.get(x).unwrap(), path.get(x+1).unwrap());
+        let distance = weights.get(&key).unwrap();
+        dist += distance;
+    }
+    return dist;
 }
 
 fn main() {
     println!("--- Day 9: All in a Single Night ---");
-    const FILE_PATH : &str = "./example.txt";
+    const FILE_PATH : &str = "./input.txt";
     // Read input.txt
     let input = filename_to_string(FILE_PATH);
     let mut weights: HashMap<String, usize> = HashMap::new();
-    let visited: HashMap<String, bool> = HashMap::new();
+    let mut cities: HashSet<String> = HashSet::new();
     input.unwrap().split("\n").for_each(|line| {
         println!("{line}");
-        parse(&line, &mut weights);
+        parse(&line, &mut weights, &mut cities);
     });
     println!("weights: {:#?}", weights);
-    println!("visited: {:#?}", visited);
+    println!("cities: {:#?}", cities);
+    let distances: Vec<usize> = cities.iter().permutations(cities.len()).unique().map(|path| calc_distance(&path, &weights)).collect();
+    println!("number of paths: {}", distances.len());
+    let min = distances.iter().min();
+    println!("minimum distance is {:#?}", min.unwrap());
 }
