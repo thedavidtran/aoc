@@ -43,6 +43,7 @@ fn calc_distance(path: &Vec<&String>, weights: &HashMap<String, usize>) -> usize
 
 fn main() {
     println!("--- Day 9: All in a Single Night ---");
+    println!("--- Part 2 ---");
     const FILE_PATH : &str = "./input.txt";
     // Read input.txt
     let input = filename_to_string(FILE_PATH);
@@ -57,5 +58,7 @@ fn main() {
     let distances: Vec<usize> = cities.iter().permutations(cities.len()).unique().map(|path| calc_distance(&path, &weights)).collect();
     println!("number of paths: {}", distances.len());
     let min = distances.iter().min();
-    println!("minimum distance is {:#?}", min.unwrap());
+    let max = distances.iter().max();
+    println!("minimum distance is {:#?}", min.unwrap()); // 251
+    println!("maximum distance is {:#?}", max.unwrap()); // 898
 }
