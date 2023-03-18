@@ -23,7 +23,7 @@ fn parse(s: &str) -> Count {
         static ref RE_DOUBLEQUOTE: Regex = Regex::new(r#"\\\""#).unwrap();
         static ref RE_HEXIDECIMAL: Regex = Regex::new(r"\\x[\h]{2}").unwrap();
     }
-    let mut trimmed = s.trim();
+    let trimmed = s.trim();
     let len = trimmed.len();
     let mut memory = len;
     let trimmed_no_doublequotes = &trimmed[1..len-1];
