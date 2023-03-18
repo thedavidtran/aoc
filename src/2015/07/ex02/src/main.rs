@@ -212,6 +212,7 @@ fn parse(s: &str) -> Wire {
 
 fn main() {
     println!("--- Day 7: Some Assembly Required ---");
+    println!("--- Part 2 ---");
     const FILE_PATH : &str = "./input.txt";
     // Read input.txt
     let input = filename_to_string(FILE_PATH);
@@ -226,6 +227,14 @@ fn main() {
         }
         wires.insert(wire.name.clone(), wire.clone());
     });
+    // OVERRIDE wire b with 3176
+    let wire = wires.get("b").unwrap();
+    let override_b = Wire {
+        val: Some(3176),
+        ..wire.clone()
+    };
+    wires.insert(override_b.name.clone(), override_b);
+
     while wires.len() > 0 {
         for (name, wire) in wires.clone().iter() {
             println!("{:#?} can evaluate {:#?}", name, wire.can_evaluate(&values_map));
@@ -236,5 +245,6 @@ fn main() {
         }
         println!("wires size {} value map size {}", wires.len(), values_map.len());
     }
-    println!("value map is {:#?}", values_map); // a: 3176
+    println!("value map is {:#?}", values_map);
+    println!("wire a value is {:#?}", values_map.get("a").unwrap()); // 14710
 }
