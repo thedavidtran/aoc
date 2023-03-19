@@ -29,7 +29,6 @@ fn validate_password(s: &str) -> bool {
         static ref RE_HAS_INVALID_CHARS: Regex = Regex::new(r"[iol]").unwrap();
         static ref RE_HAS_DOUBLE_PAIR: Regex = Regex::new(r"([a-z])\1.*?([a-z])\2").unwrap();
     }
-    println!("validating {}", s);
     if !RE_HAS_STRAIGHT.is_match(s).unwrap() {
         return false;
     }
@@ -45,11 +44,17 @@ fn validate_password(s: &str) -> bool {
 fn main() {
     const INPUT: &str = "cqjxjnds";
     println!("--- Day 11: Corporate Policy ---");
+    println!("--- Part 2 ---");
     println!("Prev password: {}", INPUT);
     println!("{}", next_password(INPUT));
     let mut pwd = String::from(INPUT);
     while !validate_password(&pwd) {
        pwd = next_password(&pwd);
     }
-    println!("next password should be: {}", &pwd); // cqjxxyzz
+    println!("next password should be (part 1): {}", &pwd); // cqjxxyzz
+    pwd = next_password(&pwd);
+    while !validate_password(&pwd) {
+        pwd = next_password(&pwd);
+    }
+    println!("next password should be (part 2): {}", &pwd); // cqkaabcc
 }
