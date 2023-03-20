@@ -3,6 +3,7 @@ use std::io::{self, Read};
 use std::fs::File;
 use lazy_static::lazy_static;
 use fancy_regex::Regex;
+use std::collections::HashMap;
 
 fn filename_to_string(s: &str) -> io::Result<String> {
     let mut file = File::open(s)?;
@@ -11,7 +12,7 @@ fn filename_to_string(s: &str) -> io::Result<String> {
     Ok(s)
 }
 
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 struct Reindeer {
     name: String,
     speed: isize,
@@ -68,11 +69,32 @@ fn main() {
     // Read input.txt
     let input = filename_to_string(FILE_PATH);
     let mut max_distance = 0;
+    let mut reindeers: Vec<Reindeer> = vec![];
     input.unwrap().split("\n").for_each(|line| {
         println!("{line}");
         let reindeer = process(&line);
+        reindeers.push(reindeer.clone());
         let traveled = reindeer.traveled(TIME_DURATION);
         max_distance = max(max_distance, traveled);
     });
     println!("The max traveled distance is: {}", max_distance); // 2655
+
+    // Part 2
+    let mut scores: HashMap<String, isize> = HashMap::new();
+    for reindeer in reindeers.iter() {
+        scores.insert(reindeer.name.clone(), 0);
+    }
+    for i in 1..=TIME_DURATION {
+        println!("Iteration {i}");
+        let distances: Vec<isize> = reindeers.iter().map(|reindeer| reindeer.traveled(i)).collect();
+        println!("distances are: {:#?}", distances);
+        let leading_distance = distances.iter().max_by(|x, y| x.cmp(y)).unwrap();
+        println!("leading_distance: {}", leading_distance);
+        let leading_reindeers: Vec<_> = reindeers.iter().filter(|reindeer| reindeer.traveled(i) == *leading_distance).collect();
+        println!("leading reindeers: {:#?}", leading_reindeers);
+        for reindeer in leading_reindeers.iter() {
+            *scores.get_mut(&reindeer.name).unwrap() += 1;
+        }
+    }
+    println!("Scores {:#?}", scores); // 1059 for Vixen
 }
