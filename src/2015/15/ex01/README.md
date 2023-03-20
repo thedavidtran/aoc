@@ -13,8 +13,10 @@ You can only measure ingredients in whole-teaspoon amounts accurately, and you h
 
 For instance, suppose you have these two ingredients:
 
+```text
 Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8
 Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3
+```
 Then, choosing to use 44 teaspoons of butterscotch and 56 teaspoons of cinnamon (because the amounts of each ingredient must add up to 100) would result in a cookie with the following properties:
 
 ```text
