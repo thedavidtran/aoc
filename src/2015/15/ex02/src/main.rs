@@ -67,11 +67,13 @@ fn main() {
         let mut durability_score = 0;
         let mut flavor_score = 0;
         let mut texture_score = 0;
+        let mut calories_score = 0;
         for ingredient in &com {
             capacity_score += ingredient.capacity;
             durability_score += ingredient.durability;
             flavor_score += ingredient.flavor;
             texture_score += ingredient.texture;
+            calories_score += ingredient.calories;
         }
         if capacity_score < 0 {
             capacity_score = 0;
@@ -86,7 +88,7 @@ fn main() {
             texture_score = 0;
         }
         let total_score = capacity_score * durability_score * flavor_score * texture_score;
-        if total_score > max_score {
+        if calories_score == 500 && total_score > max_score {
             println!("capacity {} durability {} flavor {}, texture {}", capacity_score, durability_score, flavor_score, texture_score);
             println!("total score {}", total_score);
             let name_frequency = com.iter().counts_by(|i| i.name.clone());
@@ -94,6 +96,6 @@ fn main() {
             max_score = total_score;
         }
     }
-    println!("Highest score: {}", max_score); // 222870
+    println!("Highest score for 500 calories: {}", max_score); // 117936
     println!("Best recipe: {:#?}", best_recipe);
 }
